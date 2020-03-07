@@ -65,7 +65,9 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'news_api.pipelines.NewsApiPipeline': 300,
+    'news_api.pipelines.NewsApiPipeline': 100,
+    'news_api.pipelines.MongoDBPipeline': 50,
+
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
