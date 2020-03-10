@@ -18,6 +18,7 @@ class NewsApiItem(scrapy.Item):
     description = scrapy.Field()
     url = scrapy.Field()
     publishedat = scrapy.Field()
-    content = scrapy.Field()    
+    content = scrapy.Field() 
+    sentiment = scrapy.Field()   
     
     pass

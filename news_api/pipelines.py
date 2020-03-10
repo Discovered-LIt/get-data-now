@@ -61,7 +61,7 @@ class MongoDBPipeline(object):
         # pdb.set_trace()
 
         self.collection.insert(dict(item))
-
+        
         logging.debug("Post added to MongoDB")
         return item
 

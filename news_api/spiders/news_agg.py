@@ -7,6 +7,14 @@ from newsapi import NewsApiClient
 from news_api.items import NewsApiItem
 from datetime import datetime
 
+import paralleldots
+
+# Setting your API key
+paralleldots.set_api_key("D3ZcPSa5zmgWQl4SRgmQa1jhAV9Cgi1P2BUQAFXHDKI")
+
+# Viewing your API key
+# paralleldots.get_api_key()
+
 #API Key: 2f48e626e6bb43afa1d50e6a9cce7728
 
 class NewsApiSpider(scrapy.Spider):
@@ -27,7 +35,15 @@ class NewsApiSpider(scrapy.Spider):
         body = json.loads(response.body)
         
         for value in body['articles']:
+            
+            text= value['description']
+            lang_code="en"
+            response=paralleldots.sentiment(text,lang_code)
+            
+            # pdb.set_trace()
+
             newsItem = NewsApiItem()
+
             newsItem['publishedat'] = value['publishedAt']
             newsItem['id'] = value['source']['id']
             newsItem['name'] = value['source']['name']
@@ -35,5 +51,7 @@ class NewsApiSpider(scrapy.Spider):
             newsItem['description'] = value['description']
             newsItem['url'] = value['url']
             newsItem['content'] = value['content']
+            newsItem['sentiment'] = response.keys()
+            
 
             yield newsItem
