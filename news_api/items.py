@@ -20,5 +20,6 @@ class NewsApiItem(scrapy.Item):
     publishedat = scrapy.Field()
     content = scrapy.Field() 
     sentiment = scrapy.Field()   
+    keywords = scrapy.Field()
     
     pass
