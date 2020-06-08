@@ -5,6 +5,7 @@ import pdb
 from scrapy import Spider
 from newsapi import NewsApiClient
 from news_api.items import NewsApiItem
+import time
 from datetime import datetime, timedelta
 
 import paralleldots

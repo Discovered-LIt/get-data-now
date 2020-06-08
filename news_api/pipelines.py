@@ -12,7 +12,7 @@ from scrapy.exceptions import DropItem
 # import ipdb
 # import pdb
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class NewsApiPipeline(object):
     def process_item(self, item, spider):
