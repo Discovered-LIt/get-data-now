@@ -20,7 +20,7 @@ class NewsApiPipeline(object):
 
 class MongoDBPipeline(object):
     # pdb.set_trace()
-    today = 'newsAgg_' + datetime.strftime((datetime.now() - timedelta(days=1)), "%Y/%m/%d")
+    today = 'newsAgg_' + datetime.strftime((datetime.now() - timedelta(days=1)), "%Y%m%d")
 
 
     def __init__(self, mongo_uri, mongo_db, mongo_collection):
