@@ -21,6 +21,7 @@ paralleldots.set_api_key("D3ZcPSa5zmgWQl4SRgmQa1jhAV9Cgi1P2BUQAFXHDKI")
 
 
 class NewsApiSpider(scrapy.Spider):
+    
     name = "newsagg"
     headers = {'Connection': 'keep-alive','Cache-Control': 'max-age=0','DNT': '1','Upgrade-Insecure-Requests': '1','User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36','Sec-Fetch-User': '?1','Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3','Sec-Fetch-Site': 'same-origin','Sec-Fetch-Mode': 'navigate','Accept-Encoding': 'gzip, deflate, br','Accept-Language': 'en-US,en;q=0.9',}
     newsapi = NewsApiClient(api_key='2f48e626e6bb43afa1d50e6a9cce7728')
@@ -44,15 +45,15 @@ class NewsApiSpider(scrapy.Spider):
             content = value['content']
             description = value['description']
             
-            if description is None:
-                pdb.set_trace()
-            if content is None:
-                pdb.set_trace()
+            # if description is None:
+            #     pdb.set_trace()
+            # if content is None:
+            #     pdb.set_trace()
 
             for keyword in self.keywordsToSearch:
                 # pdb.set_trace()
-                if (keyword in description.lower()) or (keyword in content.lower()) :
-                        # pdb.set_trace()
+                if  ((description != None and content != None) and ((keyword in description.lower()) or (keyword in content.lower()))) :
+                # pdb.set_trace()
                 # if "model s" in content.lower() or "model 3" in content.lower() or "model x" in content.lower() or "model y" in content.lower() or "solar" in content.lower() or "battery" in content.lower() or "gigafactory" in content.lower() or "autonomous driving" in content.lower() or "cybertruck" in content.lower() or "elon musk" in content.lower() or "organization change" in content.lower() or "stock price" in content.lower() or "bear market" in content.lower() or "china" in content.lower() or "coronavirus" in content.lower() or "covid-19" in content.lower():
                         lang_code="en"
                         response=paralleldots.sentiment(value['description'], lang_code)
