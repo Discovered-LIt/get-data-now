@@ -10,9 +10,11 @@ from scrapy.utils.project import get_project_settings
 settings = get_project_settings()
 from scrapy.exceptions import DropItem
 # import ipdb
-# import pdb
+import pdb
 import logging
 from datetime import datetime
+
+import requests
 
 class NewsApiPipeline(object):
     def process_item(self, item, spider):
@@ -60,8 +62,45 @@ class MongoDBPipeline(object):
 
         # pdb.set_trace()
 
+        # update pipeline
+
+        # post route
+
         self.collection.insert(dict(item))
 
         logging.debug("Post added to MongoDB")
         return item
 
+class DataServicePipeline(object): 
+    
+    def open_spider(self, spider):
+    #     ## initializing spider
+    #     ## opening db connection
+        self.baseUrl = 'https://damp-citadel-36349.herokuapp.com'
+        self.newsRoute = '/news'
+        self.authorRoute = '/author'
+        self.publisherRoute = '/publisher'
+
+        # pdb.set_trace()
+
+    def process_item(self, item, spider):
+        print('NEWS STORY ITEM BEFORE REQUEST', item)
+        # pdb.set_trace()
+
+        # post route: create article 
+        r = requests.post(self.baseUrl + self.newsRoute, data=item)
+
+        # patch route: update author    
+
+        r2 = requests.post(self.baseUrl + self.newsRoute, data={
+            'name' : item.author,
+            'publisher': item.publisher,
+            'lifetimeSentiment': item.sentiment
+        })
+
+        r3 = requests.patch(self.baseUrl + self.newsRoute, )
+        # patch route: update publisher
+
+        return item, r, r2   
+
+        # print('Object!', object)

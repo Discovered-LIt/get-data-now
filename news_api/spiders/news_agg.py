@@ -14,6 +14,8 @@ from google.cloud.language import types
 import os
 from google.oauth2 import service_account
 
+import readtime
+
 #API Key: 2f48e626e6bb43afa1d50e6a9cce7728
 credentials = service_account.Credentials.from_service_account_file("/Users/jjdaurora/Downloads/DiscoveredLIt-800929a7e827.json")
 
@@ -55,16 +57,34 @@ class NewsApiSpider(scrapy.Spider):
             content=value['content'],
             type=enums.Document.Type.PLAIN_TEXT)
         sentiment = googleClient.analyze_sentiment(document=document).document_sentiment
+    
+        readTime = readtime.of_text(value.content)
 
         newsItem = NewsApiItem()
-        newsItem['publishedat'] = value['publishedAt']
-        newsItem['id'] = value['source']['id']
-        newsItem['name'] = value['source']['name']
+        newsItem['publishDate'] = value['publishedAt']
+        newsItem['publisher'] = value['source']['name']
         newsItem['author'] = value['author']
         newsItem['description'] = value['description']
-        newsItem['url'] = value['url']
-        newsItem['content'] = value['content']
+        newsItem['articeLink'] = value['url']
+        newsItem['excerpt'] = value['content']
         newsItem['sentiment'] = sentiment.score
         newsItem['magnitude'] = sentiment.magnitude
+        newsItem['title'] = value['title']
+        newsItem['tags'] = {
+            'name': 'auto',
+            'emote': 'U+1F697'
+        }
+        newsItem['readTime'] = readTime.seconds
 
-        print('news item', newsItem)
+    
+        # newsItem['author_sentiment'] = updateAuthorSentiment
+        # newsItem['publisher_sentiment'] = updatePublisherSentiment
+
+        # get the news story
+        # run the sentiment analysis on that story 
+        # attribute sentiment to the author and store that data independently 
+        # attribute sentiment to the publisher and store that data independently 
+        # attribute sentiment to the news story as well and finish the news agg process and store data
+
+        # print('news item', newsItem)
+        yield newsItem

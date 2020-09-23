@@ -67,7 +67,7 @@ ROBOTSTXT_OBEY = True
 ITEM_PIPELINES = {
     'news_api.pipelines.NewsApiPipeline': 100,
     'news_api.pipelines.MongoDBPipeline': 50,
-
+    'news_api.pipelines.DataServicePipeline': 25
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
