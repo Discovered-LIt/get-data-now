@@ -58,15 +58,14 @@ class NewsApiSpider(scrapy.Spider):
             type=enums.Document.Type.PLAIN_TEXT)
         sentiment = googleClient.analyze_sentiment(document=document).document_sentiment
     
-        readTime = readtime.of_text(value.content)
+        readTime = readtime.of_text(value['content'])
 
         newsItem = NewsApiItem()
         newsItem['publishDate'] = value['publishedAt']
         newsItem['publisher'] = value['source']['name']
         newsItem['author'] = value['author']
         newsItem['description'] = value['description']
-        newsItem['articeLink'] = value['url']
-        newsItem['excerpt'] = value['content']
+        newsItem['articleLink'] = value['url']
         newsItem['sentiment'] = sentiment.score
         newsItem['magnitude'] = sentiment.magnitude
         newsItem['title'] = value['title']

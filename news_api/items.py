@@ -16,10 +16,14 @@ class NewsApiItem(scrapy.Item):
     name = scrapy.Field()
     author = scrapy.Field()
     description = scrapy.Field()
-    url = scrapy.Field()
-    publishedat = scrapy.Field()
+    articleLink = scrapy.Field()
+    publishDate = scrapy.Field()
     content = scrapy.Field()    
     sentiment = scrapy.Field()
     magnitude = scrapy.Field()
+    publisher = scrapy.Field()
+    title = scrapy.Field()
+    tags = scrapy.Field()
+    readTime = scrapy.Field()
     
     pass

@@ -66,7 +66,7 @@ ROBOTSTXT_OBEY = True
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'news_api.pipelines.NewsApiPipeline': 100,
-    'news_api.pipelines.MongoDBPipeline': 50,
+    # 'news_api.pipelines.MongoDBPipeline': 50,
     'news_api.pipelines.DataServicePipeline': 25
 }
 

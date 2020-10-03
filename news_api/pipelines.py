@@ -15,6 +15,7 @@ import logging
 from datetime import datetime
 
 import requests
+import json
 
 class NewsApiPipeline(object):
     def process_item(self, item, spider):
@@ -87,20 +88,51 @@ class DataServicePipeline(object):
         print('NEWS STORY ITEM BEFORE REQUEST', item)
         # pdb.set_trace()
 
+
+        
         # post route: create article 
         r = requests.post(self.baseUrl + self.newsRoute, data=item)
+        
+        # authors and publishers follow the same pattern:
+            # create (POST)
+            # if exists, update (PATCH)
+            # requests are enumerated
 
         # patch route: update author    
-
-        r2 = requests.post(self.baseUrl + self.newsRoute, data={
-            'name' : item.author,
-            'publisher': item.publisher,
-            'lifetimeSentiment': item.sentiment
+        print ('AUTHOR URL:', self.baseUrl + self.authorRoute)
+        r2 = requests.post(self.baseUrl + self.authorRoute, data={
+            'name' : item['author'],
+            'publisher': item['publisher'],
+            'lifetimeSentiment': item['sentiment']
         })
 
-        r3 = requests.patch(self.baseUrl + self.newsRoute, )
-        # patch route: update publisher
+        # if author already exists then update sentiment on that author
 
-        return item, r, r2   
+        if r2.status_code == 422:
+            r3 = requests.patch(self.baseUrl + self.authorRoute + '/lifetimeSentiment/', data={
+                'name': item['author'],
+                'sentimentScore': item['sentiment']
+            }) 
+            print(r3)
+        print('AUTHOR STATUS:', r3.status_code)
+
+        
+        # post route: update publisher
+        
+        r4 = requests.post(self.baseUrl + self.publisherRoute, data={
+            'name' : item['publisher'],
+            'sentimentScore': item['sentiment']
+        })
+
+        print('PUBLISHER STATUS:', r4.status_code)
+
+        if r4.status_code == 422:
+            r5 = requests.patch(self.baseUrl + self.publisherRoute + '/lifetimeSentiment/', data={
+                
+                'name': item['publisher'],
+                'sentimentScore': item['sentiment']
+            })
+
+        return item
 
         # print('Object!', object)
