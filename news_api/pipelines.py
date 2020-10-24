@@ -100,6 +100,9 @@ class DataServicePipeline(object):
 
         # patch route: update author    
         print ('AUTHOR URL:', self.baseUrl + self.authorRoute)
+        if item['author'] == 'Cnbeta.com':
+            pdb.set_trace()
+        # pdb.set_trace()
         r2 = requests.post(self.baseUrl + self.authorRoute, data={
             'name' : item['author'],
             'publisher': item['publisher'],
@@ -121,7 +124,7 @@ class DataServicePipeline(object):
         
         r4 = requests.post(self.baseUrl + self.publisherRoute, data={
             'name' : item['publisher'],
-            'sentimentScore': item['sentiment']
+            'lifetimeSentiment': item['sentiment']
         })
 
         print('PUBLISHER STATUS:', r4.status_code)

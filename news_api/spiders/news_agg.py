@@ -17,7 +17,7 @@ from google.oauth2 import service_account
 import readtime
 
 #API Key: 2f48e626e6bb43afa1d50e6a9cce7728
-credentials = service_account.Credentials.from_service_account_file("/Users/jjdaurora/Downloads/DiscoveredLIt-800929a7e827.json")
+credentials = service_account.Credentials.from_service_account_file("/Users/jjdaurora/dev/mvp/get-data-now/news_api/google.json")
 
 class NewsApiSpider(scrapy.Spider):
     name = "newsagg"
@@ -36,54 +36,53 @@ class NewsApiSpider(scrapy.Spider):
 
 
     def parse(self, response):
-
-        value = {
-            "source": {
-                "id": "recode",
-                "name": "Recode"
-            },
-            "author": "Sara Morrison",
-            "title": "Elon Musk looks bad after coronavirus cases reported at Tesla factory",
-            "description": "A predictable result.",
-            "url": "https://www.vox.com/recode/2020/6/9/21285625/coronavirus-tesla-elon-musk-fremont-factory",
-            "urlToImage": "https://cdn.vox-cdn.com/thumbor/dNhVEBSo_eqxyUOLeOp8bGRST4A=/0x392:5472x3257/fit-in/1200x630/cdn.vox-cdn.com/uploads/chorus_asset/file/20026842/GettyImages_1224450795.jpg",
-            "publishedAt": "2020-06-09T21:45:00Z",
-            "content": "In news that should surprise no one, workers at the Tesla factory reportedly have coronavirus. Two anonymous workers told the Washington Post reports that several cases of Covid-19 had been confirmed… [+4666 chars]"
-        }
-
+        body = json.loads(response.body)
         googleClient = language.LanguageServiceClient(credentials=credentials)
 
-        document = types.Document(
-            content=value['content'],
-            type=enums.Document.Type.PLAIN_TEXT)
-        sentiment = googleClient.analyze_sentiment(document=document).document_sentiment
-    
-        readTime = readtime.of_text(value['content'])
 
-        newsItem = NewsApiItem()
-        newsItem['publishDate'] = value['publishedAt']
-        newsItem['publisher'] = value['source']['name']
-        newsItem['author'] = value['author']
-        newsItem['description'] = value['description']
-        newsItem['articleLink'] = value['url']
-        newsItem['sentiment'] = sentiment.score
-        newsItem['magnitude'] = sentiment.magnitude
-        newsItem['title'] = value['title']
-        newsItem['tags'] = {
+        for value in body['articles']:
+            
+            if value['content'] is None: 
+                content = ''
+            else: 
+                content = value['content']
+                
+            description = value['description']
+            
+            document = types.Document(
+                content=content,
+                type=enums.Document.Type.PLAIN_TEXT)
+            sentiment = googleClient.analyze_sentiment(document=document).document_sentiment
+            # pdb.set_trace()
+
+            readTime = readtime.of_text(content)
+
+            newsItem = NewsApiItem()
+            
+            newsItem['publishDate'] = value['publishedAt']
+            newsItem['publisher'] = value['source']['name']
+            newsItem['author'] = value['author']
+            newsItem['description'] = value['description']
+            newsItem['articleLink'] = value['url']
+            newsItem['sentiment'] = sentiment.score
+            newsItem['magnitude'] = sentiment.magnitude
+            newsItem['title'] = value['title']
+            newsItem['tags'] = {
             'name': 'auto',
             'emote': 'U+1F697'
-        }
-        newsItem['readTime'] = readTime.seconds
+            }
+            newsItem['readTime'] = readTime.seconds
+            # pdb.set_trace()
 
-    
-        # newsItem['author_sentiment'] = updateAuthorSentiment
-        # newsItem['publisher_sentiment'] = updatePublisherSentiment
+        
+            # newsItem['author_sentiment'] = updateAuthorSentiment
+            # newsItem['publisher_sentiment'] = updatePublisherSentiment
 
-        # get the news story
-        # run the sentiment analysis on that story 
-        # attribute sentiment to the author and store that data independently 
-        # attribute sentiment to the publisher and store that data independently 
-        # attribute sentiment to the news story as well and finish the news agg process and store data
+            # get the news story
+            # run the sentiment analysis on that story 
+            # attribute sentiment to the author and store that data independently 
+            # attribute sentiment to the publisher and store that data independently 
+            # attribute sentiment to the news story as well and finish the news agg process and store data
 
-        # print('news item', newsItem)
-        yield newsItem
+            # print('news item', newsItem)
+            yield newsItem
