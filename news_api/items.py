@@ -25,5 +25,7 @@ class NewsApiItem(scrapy.Item):
     title = scrapy.Field()
     tags = scrapy.Field()
     readTime = scrapy.Field()
+    utc = scrapy.Field()
+    topic = scrapy.Field()
     
     pass

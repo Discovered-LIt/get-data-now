@@ -92,7 +92,8 @@ class DataServicePipeline(object):
         
         # post route: create article 
         r = requests.post(self.baseUrl + self.newsRoute, data=item)
-        
+        # pdb.set_trace()
+
         # authors and publishers follow the same pattern:
             # create (POST)
             # if exists, update (PATCH)

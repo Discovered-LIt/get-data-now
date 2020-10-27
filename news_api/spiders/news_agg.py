@@ -5,7 +5,7 @@ import pdb
 from scrapy import Spider
 from newsapi import NewsApiClient
 from news_api.items import NewsApiItem
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 from google.cloud import language
@@ -13,11 +13,12 @@ from google.cloud.language import enums
 from google.cloud.language import types
 import os
 from google.oauth2 import service_account
+import pytz 
 
 import readtime
 
 #API Key: 2f48e626e6bb43afa1d50e6a9cce7728
-credentials = service_account.Credentials.from_service_account_file("/Users/jjdaurora/dev/mvp/get-data-now/news_api/google.json")
+credentials = service_account.Credentials.from_service_account_file("news_api/google.json")
 
 class NewsApiSpider(scrapy.Spider):
     name = "newsagg"
@@ -57,6 +58,34 @@ class NewsApiSpider(scrapy.Spider):
 
             readTime = readtime.of_text(content)
 
+            class Person:
+                "This is a person class"
+                age = 10
+
+                def greet(self):
+                    print('Hello')
+
+            # utc 
+            # local_time = pytz.timezone("America/New_York")
+            # naive_datetime = datetime.strptime (value['publishedAt'], "%Y-%m-%dT%H:%M:%SZ")
+            # local_datetime = local_time.localize(naive_datetime, is_dst=None)
+            # utc_datetime = local_datetime.astimezone(pytz.utc)
+            # utc_timestamp = datetime.replace(tzinfo=timezone.utc).timestamp()
+                        
+            # Getting the current date  
+            # and time 
+            dt = datetime.strptime (value['publishedAt'], "%Y-%m-%dT%H:%M:%SZ")
+  
+            utc_time = dt.replace(tzinfo = timezone.utc) 
+            
+            # pdb.set_trace()
+
+            # utc_time = dt.replace(tzinfo = timezone.utc) 
+            # utc_timestamp = utc_time.timestamp() 
+            
+            # print(utc_timestamp)
+            
+
             newsItem = NewsApiItem()
             
             newsItem['publishDate'] = value['publishedAt']
@@ -65,13 +94,12 @@ class NewsApiSpider(scrapy.Spider):
             newsItem['description'] = value['description']
             newsItem['articleLink'] = value['url']
             newsItem['sentiment'] = sentiment.score
-            newsItem['magnitude'] = sentiment.magnitude
+            # newsItem['magnitude'] = sentiment.magnitude
             newsItem['title'] = value['title']
-            newsItem['tags'] = {
-            'name': 'auto',
-            'emote': 'U+1F697'
-            }
+            newsItem['tags'] = "auto"
+            newsItem['topic'] = 'tesla'
             newsItem['readTime'] = readTime.seconds
+            newsItem['utc'] = utc_time.timestamp()
             # pdb.set_trace()
 
         
