@@ -110,7 +110,7 @@ class NewsApiSpider(scrapy.Spider):
             newsItem['topic'] = 'tesla'
             newsItem['readTime'] = readTime.seconds
             newsItem['utc'] = time.time()
-            pdb.set_trace()
+            # pdb.set_trace()
 
         
             # newsItem['author_sentiment'] = updateAuthorSentiment
