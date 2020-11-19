@@ -118,7 +118,7 @@ class DataServicePipeline(object):
                 'sentimentScore': item['sentiment']
             }) 
             print(r3)
-        print('AUTHOR STATUS:', r3.status_code)
+        # print('AUTHOR STATUS:', r3.status_code)
 
         
         # post route: update publisher
@@ -132,7 +132,6 @@ class DataServicePipeline(object):
 
         if r4.status_code == 422:
             r5 = requests.patch(self.baseUrl + self.publisherRoute + '/lifetimeSentiment/', data={
-                
                 'name': item['publisher'],
                 'sentimentScore': item['sentiment']
             })

@@ -14,11 +14,18 @@ from google.cloud.language import types
 import os
 from google.oauth2 import service_account
 import pytz 
+import time
 
 import readtime
 
+import paralleldots
+
+import requests
+
 #API Key: 2f48e626e6bb43afa1d50e6a9cce7728
 credentials = service_account.Credentials.from_service_account_file("news_api/google.json")
+paralleldots.set_api_key("D3ZcPSa5zmgWQl4SRgmQa1jhAV9Cgi1P2BUQAFXHDKI")
+
 
 class NewsApiSpider(scrapy.Spider):
     name = "newsagg"
@@ -54,6 +61,10 @@ class NewsApiSpider(scrapy.Spider):
                 content=content,
                 type=enums.Document.Type.PLAIN_TEXT)
             sentiment = googleClient.analyze_sentiment(document=document).document_sentiment
+            response = paralleldots.keywords(description)
+            
+            print(response)
+
             # pdb.set_trace()
 
             readTime = readtime.of_text(content)
@@ -76,7 +87,6 @@ class NewsApiSpider(scrapy.Spider):
             # and time 
             dt = datetime.strptime (value['publishedAt'], "%Y-%m-%dT%H:%M:%SZ")
   
-            utc_time = dt.replace(tzinfo = timezone.utc) 
             
             # pdb.set_trace()
 
@@ -99,8 +109,8 @@ class NewsApiSpider(scrapy.Spider):
             newsItem['tags'] = "auto"
             newsItem['topic'] = 'tesla'
             newsItem['readTime'] = readTime.seconds
-            newsItem['utc'] = utc_time.timestamp()
-            # pdb.set_trace()
+            newsItem['utc'] = time.time()
+            pdb.set_trace()
 
         
             # newsItem['author_sentiment'] = updateAuthorSentiment
