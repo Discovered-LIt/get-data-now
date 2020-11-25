@@ -98,6 +98,16 @@ class NewsApiSpider(scrapy.Spider):
 
             newsItem = NewsApiItem()
             
+            year = int(value['publishedAt'].split('-')[0])
+            month = int(value['publishedAt'].split('-')[1])
+            day = int(value['publishedAt'].split('-')[2].split('T')[0])
+            hours = int(value['publishedAt'].split('-')[2].split('T')[1].split(':')[0])
+            seconds = int(value['publishedAt'].split('-')[2].split(':')[1])
+            miliseconds = int(value['publishedAt'].split('-')[2].split(':')[2].split('Z')[0])
+
+            dt = datetime(year,month,day,hours,seconds,miliseconds).timestamp()
+            # pdb.set_trace()
+
             newsItem['publishDate'] = value['publishedAt']
             newsItem['publisher'] = value['source']['name']
             newsItem['author'] = value['author']
@@ -109,9 +119,8 @@ class NewsApiSpider(scrapy.Spider):
             newsItem['tags'] = "auto"
             newsItem['topic'] = 'tesla'
             newsItem['readTime'] = readTime.seconds
-            newsItem['utc'] = time.time()
-            # pdb.set_trace()
-
+            newsItem['utc'] = dt
+            print( dt )
         
             # newsItem['author_sentiment'] = updateAuthorSentiment
             # newsItem['publisher_sentiment'] = updatePublisherSentiment
