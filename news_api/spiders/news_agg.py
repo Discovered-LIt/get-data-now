@@ -63,6 +63,30 @@ class NewsApiSpider(scrapy.Spider):
             sentiment = googleClient.analyze_sentiment(document=document).document_sentiment
             response = paralleldots.keywords(description)
             
+            tags_dict = [{
+                "keyword": "elon musk",
+                "tag": "elon"
+            },
+            {
+                "keyword": "model 3 model Y model X model S car electric vehicles ev's evs vehicle auto industry",
+                "tag": "auto"
+            },
+            {
+                "keyword": "home battery battery batteries solar panel solar panels home energy",
+                "tag": "solar"
+            }]
+
+            tags = []
+    
+            try:
+                for keyword in response['keywords']:  
+                    for tag in tags_dict:
+                        if (keyword['keyword'].lower() in tag['keyword'].lower()):
+                            tags.append(tag['tag'])
+            except KeyError:
+                print ("No key found")
+
+
             print(response)
 
             # pdb.set_trace()
@@ -116,7 +140,7 @@ class NewsApiSpider(scrapy.Spider):
             newsItem['sentiment'] = sentiment.score
             # newsItem['magnitude'] = sentiment.magnitude
             newsItem['title'] = value['title']
-            newsItem['tags'] = "auto"
+            newsItem['tags'] = tags
             newsItem['topic'] = 'tesla'
             newsItem['readTime'] = readTime.seconds
             newsItem['utc'] = dt
